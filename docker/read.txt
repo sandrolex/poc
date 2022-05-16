@@ -1,0 +1,18 @@
+original message
+https://www.openwall.com/lists/oss-security/2019/02/13/3
+
+poc C
+https://github.com/q3k/cve-2019-5736-poc
+
+explained
+https://blog.dragonsector.pl/2019/02/cve-2019-5736-escape-from-docker-and.html
+
+other poc
+https://github.com/feexd/pocs/tree/master/CVE-2019-5736
+
+escaping containers
+https://medium.com/better-programming/escaping-docker-privileged-containers-a7ae7d17f5a1
+
+how to intercept veth traffic
+https://community.pivotal.io/s/article/How-to-get-tcpdump-for-containers-inside-Kubernetes-pods?language=en_US
+

